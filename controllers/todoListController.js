@@ -3,6 +3,11 @@ import { User } from "../models/userSchema.js";
 const todos = async(req,res)=>{
     try{
         const user = req.user
+
+        if (!user) {
+            return res.status(401).json({ error: 'User not authenticated' });
+        }
+
         const existingUser = await User.findById(user._id)
 
         if(!existingUser){
@@ -15,6 +20,7 @@ const todos = async(req,res)=>{
         }
 
         const todos = existingUser.todo
+        
 
         if(todos.length === 0){
             console.log("Todos Not Found")
