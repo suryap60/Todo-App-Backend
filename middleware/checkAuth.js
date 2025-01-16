@@ -3,7 +3,8 @@ import { verifyToken } from "../utils/jwt.js";
 
 const checkAuth =async(req,res,next)=>{
     try{
-        const token = req.headers.authorization?.split(" ")[1]; // Extract the token after 'Bearer'
+        const token = req.headers.authorization?.split(" ")[1];
+        //?.split(" ")[1]; // Extract the token after 'Bearer'
     // console.log(token)
 
     if(!token){

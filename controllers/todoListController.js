@@ -138,7 +138,7 @@ const deleteTodoData = async (req,res)=>{
         })
     }
 
-    // Remove the todo from the array
+    // Remove the todo from the user's todo list
     existingUser.todo.splice(todoIndex,1)
 
     await existingUser.save();
@@ -154,4 +154,35 @@ const deleteTodoData = async (req,res)=>{
        }
 }
 
-export { todos , todoData , updateTodoData , deleteTodoData}
+const completedTodoData = async(req,res)=>{
+    try{
+        const user = req.user
+        const todoId = req.params.id
+        
+        const existingUser =await User.findById(user._id)
+
+        if(!existingUser){
+            return res.status(404).json({
+                message:"User Not Found"
+            })
+        }
+
+        const todoIndex = existingUser.todo.findIndex((todo)=>todo._id.toString()==todoId)
+        if(todoIndex === -1){
+            return res.status(404).json({
+                message:"Todo Not Found"
+            })
+        }
+
+        // Todo the completed status
+        existingUser.todo[todoIndex].completed  = !existingUser.todo[todoIndex].completed;
+        await existingUser.save();
+        return res.status(200).json({ message: "Todo updated successfully", todos: existingUser.todo });
+    }
+    catch(error){
+        return res.status(500).json({error:error.message})
+    }
+
+}
+
+export { todos , todoData , updateTodoData , deleteTodoData, completedTodoData}
